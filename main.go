@@ -90,6 +90,5 @@ func setLogFile() {
 		log.Fatalf("open log file failed: %v", err)
 	}
 	log.SetOutput(f)
-	log.SetOutput(os.Stdout)
 }
 
