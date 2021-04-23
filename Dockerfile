@@ -17,8 +17,7 @@ FROM uhub.service.ucloud.cn/bluecity/alpine:3.12
 WORKDIR /app
 
 COPY --from=builder /app/kafetcher ./
-
-EXPOSE 8765
+COPY --from=builder /app/config.json ./config.json
 
 VOLUME kafetcher
 
