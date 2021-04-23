@@ -1,0 +1,8 @@
+{
+  "bootstrap_server": "10.9.178.62",
+  "group_id": "pns-sender-push",
+  "topic": [
+    "push"
+  ],
+  "prom_port": "8765"
+}
