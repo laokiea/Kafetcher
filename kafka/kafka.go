@@ -210,7 +210,6 @@ func GetConsumerOffsetPartitionNum() error {
 		consumerOffsetPartitionLeader[p.Index] = p.LeaderId
 	}
 	atomic.StoreInt32(&consumerOffsetPartitionNum, int32(len(f.metadata.Topics[ConsumerOffsetTopicName].Partitions)))
-	//fetchers.Store("metadata", f)
 	return nil
 }
 
@@ -226,6 +225,9 @@ func hashCode(s string) (hash int32) {
 		for _, b := range s {
 			hash = hash * 31 + b
 		}
+	}
+	if hash < 0 {
+		hash = -hash
 	}
 	return
 }
@@ -490,7 +492,7 @@ func (f *Fetcher) SendRequest(nodeId int32) {
 	// global count
 	atomic.CompareAndSwapInt32(&rc, atomic.LoadInt32(&rc), atomic.LoadInt32(&rc) / 1024)
 
-	ctx, cancel := context.WithTimeout(f.ctx, time.Millisecond * 1000)
+	ctx, cancel := context.WithTimeout(f.ctx, time.Millisecond * 4000)
 	defer cancel()
 	p := f.p.ReqBuffer.buf[:f.p.ReqBuffer.len]
 	f.p.ReqBuffer = NewParserBuffer(BufferSize)
@@ -500,13 +502,14 @@ func (f *Fetcher) SendRequest(nodeId int32) {
 		f.Done <- err
 		return
 	}
+	readLength := 0
 	for {
 		select {
 		case <- ctx.Done():
 			return
 		default:
 			// TODO: blocking operation
-			n, err := conn.Read(f.p.ResBuffer.buf)
+			n, err := conn.Read(f.p.ResBuffer.buf[readLength:])
 			if err != nil {
 				if err != io.EOF {
 					f.Done <- err
@@ -517,7 +520,7 @@ func (f *Fetcher) SendRequest(nodeId int32) {
 				f.Done <- errors.New("empty response")
 				return
 			}
-			return
+			readLength += n
 		}
 	}
 }

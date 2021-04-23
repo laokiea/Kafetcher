@@ -1,8 +1,8 @@
 {
-  "bootstrap_server": "",
+  "bootstrap_server": "gst",
   "group_id": "",
   "topic": [
     ""
   ],
-  "prom_port": "8765"
+  "prom_port": ""
 }
