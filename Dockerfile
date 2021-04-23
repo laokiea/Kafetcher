@@ -10,7 +10,7 @@ RUN set -x; \
     && go env -w GOPATH=/gopath \
     && go env -w GO111MODULE=on \
     && go env -w GOPROXY=https://goproxy.cn,direct \
-    && \GOOS=linux GOARCH=amd64 go build -o ./kafetcher main.go
+    && GOOS=linux GOARCH=amd64 go build -o ./kafetcher main.go
 
 FROM uhub.service.ucloud.cn/bluecity/alpine:3.12
 
