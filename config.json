@@ -1,0 +1,8 @@
+{
+  "bootstrap_server": "",
+  "group_id": "",
+  "topic": [
+    ""
+  ],
+  "prom_port": "8765"
+}
