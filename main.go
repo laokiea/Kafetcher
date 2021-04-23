@@ -54,7 +54,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("list topic offset failed: %v", err)
 			}
-			f.PrintlnK()
+			//f.PrintlnK()
 		}
 	}
 }
