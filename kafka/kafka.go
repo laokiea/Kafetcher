@@ -509,6 +509,11 @@ func (f *Fetcher) SendRequest(nodeId int32) {
 			return
 		default:
 			// TODO: blocking operation
+			err := conn.SetReadDeadline(time.Now().Add(time.Second * 4))
+			if err != nil {
+				f.Done <- err
+				return
+			}
 			n, err := conn.Read(f.p.ResBuffer.buf[readLength:])
 			if err != nil {
 				if err != io.EOF {

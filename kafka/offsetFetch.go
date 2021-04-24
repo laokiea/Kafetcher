@@ -2,7 +2,6 @@ package kafka
 
 import (
 	"fmt"
-	"log"
 )
 
 // offset partition format
@@ -65,7 +64,6 @@ func (offset *OffsetFetch) Parse() (err error) {
 	//error code
 	offset.ErrorCode = offset.p.readInt16FromBinaryResponse()
 	if offset.ErrorCode != 0 {
-		log.Fatal("sss")
 		return fmt.Errorf("parse offsetFetch response error, code: %d", offset.ErrorCode)
 	}
 

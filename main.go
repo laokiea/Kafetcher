@@ -18,6 +18,7 @@ var (
 )
 
 const (
+	DefaultPromPort = "8765"
 	LagFetchDuration = 15
 )
 
@@ -66,7 +67,7 @@ func PromHttpServerStart() {
 	if kafka.PromPort != "" {
 		port = kafka.PromPort
 	} else {
-		port = "8765"
+		port = DefaultPromPort
 	}
 	httpServer := &http.Server{
 		Handler: mux,
