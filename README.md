@@ -1,6 +1,5 @@
 # Kafetcher
 Kafka LAG watcher
-Kafka队列堆积监控
 
 ## Usage
 ### Docker (recommend way)
