@@ -1,5 +1,7 @@
 FROM uhub.service.ucloud.cn/bluecity/golang:1.15.0-alpine as builder
 
+MAINTAINER sashengpeng@blued.com
+
 WORKDIR /app
 
 COPY ./ ./
