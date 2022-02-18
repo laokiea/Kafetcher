@@ -82,7 +82,7 @@ func PromHttpServerStart() {
 
 func profileServer() {
 	mux := http.NewServeMux()
-	mux.Handle("/debug/pprof", http.HandlerFunc(pprof.Index))
+	mux.Handle("/debug/pprof/", http.HandlerFunc(pprof.Index))
 	mux.Handle("/debug/pprof/heap", http.HandlerFunc(pprof.Index))
 	mux.Handle("/debug/pprof/profile", http.HandlerFunc(pprof.Profile))
 	_ = (&http.Server{Addr: ":8764", Handler: mux}).ListenAndServe()
