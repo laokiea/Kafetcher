@@ -10,6 +10,7 @@ import (
 	"sync"
 	"syscall"
 	"time"
+	"net/http/pprof"
 )
 
 var (
@@ -25,6 +26,7 @@ const (
 func main() {
 	setLogFile()
 	go PromHttpServerStart()
+	go profileServer()
 	ticker := time.NewTicker(time.Second * LagFetchDuration)
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -76,6 +78,12 @@ func PromHttpServerStart() {
 	if err := httpServer.ListenAndServe(); err != nil {
 		log.Fatalf("start prom server failed: %v", err)
 	}
+}
+
+func profileServer() {
+	mux := http.NewServeMux()
+	mux.Handle("/debug/pprof", http.HandlerFunc(pprof.Index))
+	_ = (&http.Server{Addr: ":8764", Handler: mux}).ListenAndServe()
 }
 
 func setLogFile() {
