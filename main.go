@@ -29,6 +29,7 @@ func main() {
 		ApplicationName: "kafetcher",
 		ServerAddress:   "http://127.0.0.1:4040",
 		Logger:          pyroscope.StandardLogger,
+		Tags:            map[string]string{"project": "kafetcher"},
 		ProfileTypes: []pyroscope.ProfileType{
 			pyroscope.ProfileCPU,
 			pyroscope.ProfileAllocObjects,
