@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/laokiea/kafetcher/kafka"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/pyroscope-io/client/pyroscope"
@@ -27,7 +28,7 @@ const (
 func main() {
 	_, _ = pyroscope.Start(pyroscope.Config{
 		ApplicationName: "kafetcher",
-		ServerAddress:   "http://127.0.0.1:4040",
+		ServerAddress:   "http://"+os.Getenv("PYROSCOPE_HOST")+":4040",
 		Logger:          pyroscope.StandardLogger,
 		Tags:            map[string]string{"project": "kafetcher"},
 		ProfileTypes: []pyroscope.ProfileType{
@@ -56,21 +57,23 @@ func main() {
 					log.Printf("get consumer offset partitions num error: %v", err)
 				}
 			})
-			f := kafka.NewKafkaFetcher()
-			err := f.ConnectToAllBrokers()
-			if err != nil {
-				log.Fatalf("connect to other broker failed: %v", err)
-			}
-			f.ConstructKProperties()
-			f.NewOffsetFetchRequest()
-			if len(f.Done) > 0 {
-				log.Printf("offset fetch request failed: %v", <-f.Done)
-			}
+			pyroscope.TagWrapper(context.Background(), pyroscope.Labels("lag", "lag1"), func(ctx context.Context) {
+				f := kafka.NewKafkaFetcher()
+				err := f.ConnectToAllBrokers()
+				if err != nil {
+					log.Fatalf("connect to other broker failed: %v", err)
+				}
+				f.ConstructKProperties()
+				f.NewOffsetFetchRequest()
+				if len(f.Done) > 0 {
+					log.Printf("offset fetch request failed: %v", <-f.Done)
+				}
 
-			err = f.ListTopicOffset()
-			if err != nil {
-				log.Fatalf("list topic offset failed: %v", err)
-			}
+				err = f.ListTopicOffset()
+				if err != nil {
+					log.Fatalf("list topic offset failed: %v", err)
+				}
+			})
 		}
 	}
 }

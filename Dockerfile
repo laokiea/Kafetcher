@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY ./ ./
 
+ENV PYROSCOPE_HOST="10.10.85.252"
+
 RUN set -x; \
     mkdir /gopath \
     && unset GOPATH \
