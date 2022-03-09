@@ -3,14 +3,15 @@ package main
 import (
 	"github.com/laokiea/kafetcher/kafka"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/pyroscope-io/client/pyroscope"
 	"log"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
 	"time"
-	"net/http/pprof"
 )
 
 var (
@@ -24,6 +25,18 @@ const (
 )
 
 func main() {
+	_, _ = pyroscope.Start(pyroscope.Config{
+		ApplicationName: "kafetcher",
+		ServerAddress:   "http://127.0.0.1:4040",
+		Logger:          pyroscope.StandardLogger,
+		ProfileTypes: []pyroscope.ProfileType{
+			pyroscope.ProfileCPU,
+			pyroscope.ProfileAllocObjects,
+			pyroscope.ProfileAllocSpace,
+			pyroscope.ProfileInuseObjects,
+			pyroscope.ProfileInuseSpace,
+		},
+	})
 	setLogFile()
 	go PromHttpServerStart()
 	go profileServer()
